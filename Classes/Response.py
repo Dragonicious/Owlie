@@ -50,21 +50,21 @@ class Response:
 			dirt = self.responses['general']
 
 		for check in dirt:
-			print("CHECKING IN: ", check)
+			# print("CHECKING IN: ", check)
 			for word in words:
 				word_checks = check.split(' ')
-				print("LOOKING FOR: ", word)
+				# print("LOOKING FOR: ", word)
 				if word in word_checks:
 					if word == '':
 						continue 
-					print("IS IN CHECK: ", word)
+					# print("IS IN CHECK: ", word)
 					# print("NEXT TO CALL: ", dirt[check], type(dirt[check]))
 					# if isinstance(dirt[check],(list,)):
 					if type(dirt[check]) is list:
 						print("RETURNING")
 						return dirt[check][random.randint(0, len(dirt[check]))-1]
 					else:
-						print("LOOKING FOR NEXT")
+						# print("LOOKING FOR NEXT")
 						if dirt[check]:
 							further_check = self.dig_for_response(words, at_word+1, dirt[check])
 							if further_check == False:

@@ -16,10 +16,6 @@ async def on_ready():
 @bot.event
 async def on_message(message):
 	if message.server.id == config.server:
-		if message.content.startswith("!embed"):
-			embed_content = discord.Embed(title='Title:Definition for XXXXXX', description="Description: Ye boy boy oh", color=0x824cb3)
-			embed_content.add_field(name="add_field 1", value="Yey it's a field")
-			await bot.send_message(message.channel, embed=embed_content)
 		await Reader.read(message)
 
 @bot.event

@@ -6,6 +6,7 @@ from config import config
 # from Classes.Answer import Answer
 from Classes.Interpreter import Interpreter
 from Classes.Dictionary import Dictionary
+from Classes.Reactions import Reactions
 
 class Response:
 	tree = {}
@@ -32,27 +33,39 @@ class Response:
 		# words = self.words
 		if tree == None and at_word == 0:
 			tree = self.tree
-		print(tree);
+		# print(tree);
 		# print(at_word)
 		for branch in tree:
-			print("Checking in : ", branch)
+			# print("Checking in : ", branch)
 			for word in self.words:
 				word_checks = branch.split(' ')
 				if word in word_checks and word != '':
-					print('Found: ', word)
+					# print('Found: ', word)
 					#____________________________ things to do _________________________
 					if type(tree[branch]) is self.Reply:
-						print('replying')
+						print('-------- Replying')
 						await self.bot.send_message(self.message.channel, tree[branch].msg())
 						# return None
 
 					elif type(tree[branch]) is self.Action:
 						print("------- Executing: ", tree[branch].do)
 						if tree[branch].do == 'define':
-							await self.bot.send_message(self.message.channel, "", embed = Dictionary(self.words[int(at_word+1):]).embed())
+							try:
+								answer = Dictionary(self.words[int(at_word+1):]).embed()
+							except Exception as ex:
+								if (ex.args[0] == '404'):
+									await Reactions(self.bot, self.message).add('huh?')
+								else:
+									await Reactions(self.bot, self.message).add('error')
+								answer = None
+							else:
+								if answer:
+									await self.bot.send_message(self.message.channel, "", embed = answer)
+								else:
+									await Reactions(self.bot, self.message).add('error')
 					#__________________________________________________________________
 					else:
-						print("LOOKING FOR NEXT")
+						# print("LOOKING FOR NEXT")
 						if tree[branch]:
 							further_check = await self.pick_response(at_word+1, tree[branch])
 							if further_check == False:
@@ -105,6 +118,12 @@ class Response:
 			}
 			,'made'	: {
 				'you' : my_maker_is
+			}
+		}
+		,'whos':	{
+			'owlie' : who_am_i
+			,'your'	: {
+				'creator maker coder owner'	: my_maker_is
 			}
 		}
 		,'what'	: {

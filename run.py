@@ -11,11 +11,12 @@ logging.basicConfig(filename='events.log', 			format='%(asctime)s %(levelname)s:
 
 @bot.event
 async def on_ready():
-	print('Owlie: Ready!')
+	print("Owlie's ready! ^^")
 
 @bot.event
 async def on_message(message):
-	if message.server.id == config.server:
+	if message.server.id == config.server and message.author != bot.user:
+		#if message is in configured server and isn't the bot's message
 		await Reader.read(message)
 
 @bot.event
@@ -23,5 +24,4 @@ async def on_member_join(member):
 	await bot.send_message(discord.Object(id=config.main_channel), "Hi "+member.mention+"! Nepamiršk paskaityti #info ir prisistatyti ^^ !")
 
 bot.run(config.bot_key)
-
-logging.info('Owlie: Ready!')
+# logging.info('Owlie: Ready!')

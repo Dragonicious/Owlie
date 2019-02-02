@@ -8,6 +8,15 @@ class Dictionary:
 	def __init__(self, words):
 		self.words = words
 
+	def embed(self):
+		data 	= self.define()
+		if not data:
+			return False
+		phrase 	= " ".join(data['word'].split("_"))
+		embed 	= discord.Embed(title=phrase+":", description=data['definition'], color=0x824cb3, footer='According to Oxford Dictionary')
+		
+		return embed
+
 	def define(self):
 		phrase = (" ".join([str(i) for i in self.words]))
 
@@ -39,11 +48,3 @@ class Dictionary:
 		ret['definition'] = data['lexicalEntries'][0]['entries'][0]['senses'][0]['definitions'][0]
 
 		return ret
-
-	def embed(self):
-		data 	= self.define()
-		if not data:
-			return False
-		phrase 	= " ".join(data['word'].split("_"))
-		embed 	= discord.Embed(title=phrase+":", description=data['definition'], color=0x824cb3)
-		return embed

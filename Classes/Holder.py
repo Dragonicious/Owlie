@@ -20,14 +20,6 @@ class Holder:
 		else:
 			return []
 
-	# def save_data(self):
-	# 	#deprecated 
-	# 	try:
-	# 		with open('holder.json', 'w') as file:
-	# 			file.write(json.dumps([subject.__dict__ for subject in self.hold]))
-	# 	except Exception as inst:
-	# 		print('Failed to save', inst)
-
 	def add_subject(self, subject, loading = False):
 		if subject.id not in self.subjects():
 			self.hold.append(subject)
@@ -35,6 +27,7 @@ class Holder:
 				self.Sql.add_subject(subject)
 
 	def update(self, message):
+		self.Sql.log_stats(message)
 		self.sub(message.author.id).renew(message)
 
 	def subjects(self):

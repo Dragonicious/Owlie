@@ -15,8 +15,6 @@ class Response:
 		self.bot = bot
 		self.message = message
 		self.words = Interpreter.parse(message.content.replace(config.bot_mention, ""))
-		
-		# print("words at init: ", self.words)
 
 
 	class Action:
@@ -84,7 +82,7 @@ class Response:
 					await Reactions(self.bot, self.message).add('huh?')
 				else:
 					#some other error
-					print(ex.args)
+					print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Dictionary ",ex.args)
 					
 				return None
 			else:
@@ -100,7 +98,7 @@ class Response:
 					roll_embed 	= discord.Embed(title=random.randint(1,int(limit)), color=0x824cb3)
 					await self.bot.send_message(self.message.channel, "", embed = roll_embed)
 			except Exception as ex:
-				print(ex.args)
+				print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! roll",ex.args)
 				await Reactions(self.bot, self.message).add('error')
 		else:
 			return None

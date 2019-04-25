@@ -1,8 +1,12 @@
+import logging
+logger = logging.getLogger('rpi')
+
 import threading
 import time
 import logging
 import json
 import re
+import discord
 from config import config
 from Classes.Response import Response
 from Classes.Holder import Holder
@@ -23,6 +27,7 @@ class Reader:
 		if message.author.id not in self.Holder.subjects():
 			self.Holder.add_subject(Subject(message))
 
+		
 		spam_check = await self.check_spam(message)
 
 		if config.bot_mention in message.content or message.content.startswith("!"):
@@ -33,8 +38,8 @@ class Reader:
 		self.Holder.update(message)
 		#=================================================== console log
 		last_msg_sub = self.Holder.sub(message.author.id)
-		tmp_print_msg = str(last_msg_sub.name) + ": " +str(last_msg_sub.last_message) +"          [spm:I"+ str(last_msg_sub.identical_spam) +";R:"+ str(last_msg_sub.random_spam) +"] [W:"+str(last_msg_sub.warnings)+"]"
-		print("\t\t"+str(tmp_print_msg)+" H.["+str(len(self.Holder.hold))+"]")
+		tmp_print_msg = str(time.strftime("%m-%d %H:%M")) + " |\t" + str(last_msg_sub.name) + ": " +str(last_msg_sub.last_message)
+		print("\t"+str(tmp_print_msg))
 			
 
 	async def check_spam(self, message):
@@ -79,7 +84,7 @@ class Reader:
 		return time.time() < self.Holder.last_timestamp(message.author.id) + timeout
 
 	async def spam_warning(self, message):
-		logging.info(str(message.author)+ " warned for spam [identical message]: "+ str(message.content))
+		logger.info(str(message.author) + str(message.author.id)+ " warned for spam [identical message]: "+ str(message.content))
 		await self.bot.send_message(message.channel, "Sorry, no spam allowed! " + message.author.mention)
 		self.Holder.add_warning('spam', message.author.id)
 
@@ -88,6 +93,11 @@ class Reader:
 			await self.bot.send_message(message.channel, "Would kick " + str(message.author))
 		else :	
 			self.Holder.add_action('kicked', message.author.id)
-			await self.bot.kick(message.author)
-			await self.bot.send_message(message.channel, "Was nice knowing you, " + str(message.author))
+
+			try:
+				await self.bot.kick(message.author)
+				await self.bot.send_message(message.channel, "Was nice knowing you, " + str(message.author))
+				logger.info('Kicked '+str(message.author) + str(message.author.id))
+			except discord.errors.Forbidden:
+				logger.warning("Can't kick "+ str(message.author) + str(message.author.id)+ " - missing permissions")
 
